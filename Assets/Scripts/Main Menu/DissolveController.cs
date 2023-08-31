@@ -7,8 +7,14 @@ public class DissolveController : MonoBehaviour
     public float dissolveAmount;
     public float dissolveSpeed;
     public bool isDissolving;
-    private Material mat;   
-    // Start is called before the first frame update
+    private Material mat;
+
+    [ColorUsageAttribute(true,true)]
+    public Color inColor;
+
+    [ColorUsageAttribute(true, true)]
+    public Color outColor;
+
     void Start()
     {
         mat = GetComponent<SpriteRenderer>().material;
@@ -26,16 +32,28 @@ public class DissolveController : MonoBehaviour
 
         if (isDissolving)
         {
-            if (dissolveAmount > 0)
-                dissolveAmount -= dissolveSpeed * Time.deltaTime;
+            DissolveOut(dissolveSpeed, outColor);
         }
 
         if (!isDissolving)
         {
-            if (dissolveAmount < 1)
-                dissolveAmount += dissolveSpeed * Time.deltaTime;
+            DissolveIn(dissolveSpeed, inColor);
         }
 
         mat.SetFloat("_DissolveAmount", dissolveAmount);
+    }
+
+    public void DissolveOut(float speed, Color color)
+    {
+        mat.SetColor("_DissolveColor", color);
+            if (dissolveAmount > 0)
+                dissolveAmount -= speed * Time.deltaTime;
+    }
+
+    public void DissolveIn(float speed, Color color)
+    {
+        mat.SetColor("_DissolveColor", color);
+        if (dissolveAmount < 1)
+            dissolveAmount += speed * Time.deltaTime;
     }
 }
